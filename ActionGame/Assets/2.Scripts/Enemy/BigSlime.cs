@@ -74,7 +74,7 @@ public class BigSlimeMoveState : IState<Enemy>
         float dist = Vector2.Distance(Instance.transform.position, Instance.target.transform.position);
         if (!Instance.target || dist > 5) //타겟이 null이거나 거리가 5이상이면
             Instance.SetState(new BigSlimeIdleState()); //Idle로 변경 ( 이동 중단 ) 
-        if (rangeAttackDelay > 2f) //원거리공격대기시간이 다 차면 원거리공격
+        if (rangeAttackDelay > 5f) //원거리공격대기시간이 다 차면 원거리공격
         {
             Instance.SetState(new BigSlimeRangeAttack());
             rangeAttackDelay = 0;
@@ -186,9 +186,9 @@ public class BigSlimeDeathState : IState<Enemy>
     IEnumerator C_Death()
     {
         Instance.Anim.SetTrigger("Death");
-        yield return new WaitForSeconds(0.2f);
-        Object.Destroy(Instance.gameObject);
         Instance.IsDeath = true;
+        yield return new WaitForSeconds(0.5f);
+        Object.Destroy(Instance.gameObject);
     }
     public void OnEnter(Enemy instance)
     {

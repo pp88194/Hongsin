@@ -141,11 +141,17 @@ public class SlimeHitState : IState<Enemy>
 public class SlimeDeathState : IState<Enemy>
 {
     public Enemy Instance { get; set; }
+    IEnumerator C_Death()
+    {
+        Instance.Anim.SetTrigger("Death");
+        Instance.IsDeath = true;
+        yield return new WaitForSeconds(0.5f);
+        Object.Destroy(Instance.gameObject);
+    }
     public void OnEnter(Enemy instance)
     {
         Instance = instance;
-        Instance.IsDeath = true;
-        Instance.Anim.SetTrigger("Death");
+        Instance.StartCoroutine(C_Death());
     }
 
     public void OnExit()

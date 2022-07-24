@@ -394,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &718607653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,6 +414,7 @@ MonoBehaviour:
   moveSpeed: 1
   detectionDist: 3
   target: {fileID: 0}
+  IsDeath: 0
   miniSlimePrefab: {fileID: 5621118643224207756, guid: 86479a9ac2b90d44f97b01b716c2c761, type: 3}
 --- !u!95 &718607654
 Animator:
@@ -648,6 +649,7 @@ MonoBehaviour:
   moveSpeed: 1
   detectionDist: 3
   target: {fileID: 0}
+  IsDeath: 0
 --- !u!61 &1475611335
 BoxCollider2D:
   m_ObjectHideFlags: 0
