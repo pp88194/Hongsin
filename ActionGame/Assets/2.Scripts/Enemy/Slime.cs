@@ -121,7 +121,7 @@ public class SlimeHitState : IState<Enemy>
     IEnumerator C_Hit()
     {
         Instance.Anim.SetTrigger("Hit");
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(Instance.HitDelay);
         Instance.SetState(new SlimeIdleState());
     }
     public void OnEnter(Enemy instance)

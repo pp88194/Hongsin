@@ -7,6 +7,7 @@ public abstract class Enemy : MonoFSM<Enemy>
 {
     #region  변수
     protected Action DeathAction { get; set; }
+    [Header("체력")]
 
     [SerializeField] protected int maxHp;
     public int MaxHp => maxHp;
@@ -21,16 +22,23 @@ public abstract class Enemy : MonoFSM<Enemy>
                 DeathAction?.Invoke();
         }
     }
+    [Header("공격력")]
     [SerializeField] protected int attackDamage;
     public int AttackDamage => attackDamage;
+    [Header("방어력")]
     [SerializeField] protected int armor;
     public int Armor => armor;
+    [Header("이동속도")]
     [SerializeField] protected float moveSpeed = 1;
     public float MoveSpeed => moveSpeed;
+    [Header("플레이어 감지범위")]
     [SerializeField] protected float detectionDist = 3; //플레이어 감지 범위
+    [Header("피격 딜레이")]
+    [SerializeField] float hitDelay = 0.1f;
+    public float HitDelay => hitDelay;
     public float DetectionDist => detectionDist;
     [HideInInspector] public Player target;
-    public bool IsDeath;
+    [HideInInspector] public bool IsDeath;
     #region Component
     protected SpriteRenderer spriteRenderer;
     public SpriteRenderer m_SpriteRenderer => spriteRenderer;

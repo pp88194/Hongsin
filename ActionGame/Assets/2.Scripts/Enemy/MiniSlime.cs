@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class MiniSlime : MonoBehaviour
 {
     Vector2 dir;

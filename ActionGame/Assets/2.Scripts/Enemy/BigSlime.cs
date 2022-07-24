@@ -162,7 +162,7 @@ public class BigSlimeHitState : IState<Enemy>
     IEnumerator C_Hit()
     {
         Instance.Anim.SetTrigger("Hit");
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(Instance.HitDelay);
         Instance.SetState(new BigSlimeIdleState());
     }
     public void OnEnter(Enemy instance)

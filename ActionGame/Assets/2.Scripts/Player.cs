@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoFSM<Player>
 {
     #region 변수
+    [Header("체력")]
     [SerializeField] int maxHp;
     public int MaxHp => maxHp;
     [SerializeField] int hp;
@@ -16,10 +17,26 @@ public class Player : MonoFSM<Player>
             hp = Mathf.Clamp(value, 0, maxHp);
         }
     }
+    [Header("공격력")]
     [SerializeField] int attackDamage;
     public int AttackDamage => attackDamage;
+    [Header("공격속도(높을수록 빠름)")]
+    [SerializeField] float attackSpeed = 1;
+    public float AttackSpeed
+    {
+        get => attackSpeed;
+        set
+        {
+            attackSpeed = Mathf.Clamp(value, 1, 5);
+            Anim.SetFloat("AttackSpeed", value);
+        }
+    }
+    [Header("이동속도")]
     [SerializeField] float moveSpeed;
     public float MoveSpeed => moveSpeed;
+    [Header("피격딜레이")]
+    [SerializeField] float hitDelay = 0.1f;
+    public float HitDelay => hitDelay;
 
     Vector2 moveDir;
     public Vector2 MoveDir => moveDir;
@@ -35,7 +52,6 @@ public class Player : MonoFSM<Player>
     public Animator Anim => anim;
     #endregion
     #endregion
-
     void InputDir()
     {
         moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
@@ -53,6 +69,7 @@ public class Player : MonoFSM<Player>
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        AttackSpeed = attackSpeed;
     }
     private void Start()
     {
@@ -66,7 +83,7 @@ public class Player : MonoFSM<Player>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + new Vector3(xDir, 0), new Vector3(1.5f, 2));
+        Gizmos.DrawWireCube(transform.position + new Vector3(xDir * 0.3f, 0), new Vector3(2f, 2));
     }
 }
 
@@ -176,23 +193,16 @@ public class PlayerAttackState : IState<Player>
 
     IEnumerator C_Attack()
     {
-        //RaycastHit2D hit = Physics2D.CircleCast(Instance.transform.position, 5, Vector2.zero, 5, LayerMask.GetMask("Enemy"));
-        //if (hit)
-        //{ //플레이어가 감지되었으면 플레이어를 타겟으로 지정하고 이동상태로 변경
-        //    Instance.target = hit.collider.GetComponent<Player>();
-        //    Instance.SetState(new SlimeMoveState());
-        //}
-        //Gizmos.DrawWireCube(transform.position + new Vector3(xDir, 0), new Vector3(1.5f, 2));
-        
+        int xDir = Instance.XDir;
         Instance.Anim.SetBool("isAttack", true);
-        yield return new WaitForSeconds(0.75f);
-        Collider2D[] hits = Physics2D.OverlapBoxAll(Instance.transform.position + new Vector3(Instance.XDir, 0), new Vector2(1.5f, 2), 0, LayerMask.GetMask("Enemy"));
+        yield return new WaitForSeconds(0.7f / Instance.AttackSpeed);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(Instance.transform.position + new Vector3(xDir, 0), new Vector2(1.5f, 2), 0, LayerMask.GetMask("Enemy"));
         foreach(var hit in hits) 
         {
             hit.GetComponent<Enemy>().Hit(Instance.AttackDamage);
         }
-        Instance.SetState(new PlayerIdleState());
         Instance.Anim.SetBool("isAttack", false);
+        Instance.SetState(new PlayerIdleState());
     }
     public void OnEnter(Player player)
     {
@@ -219,7 +229,7 @@ public class PlayerHitState : IState<Player>
     IEnumerator C_Hit()
     {
         Instance.Anim.SetTrigger("Hit");
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(Instance.HitDelay);
         Instance.SetState(new PlayerIdleState());
     }
     public void OnEnter(Player instance)
